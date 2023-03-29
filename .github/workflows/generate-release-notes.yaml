@@ -30,14 +30,20 @@ jobs:
         with:
           fromTag: ${{ inputs.fromTag }}
           toTag: ${{ inputs.toTag }}
+          configurationJson: |
+            {
+              "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
+              "title": "## 🚀 All the merged PRs",
+              "labels": []
+            }
 
       - name: Print Changelog
         run: |
           echo "Changelog:"
           echo "${{ steps.github_release.outputs.changelog }}"
 
-      - name: Create Github Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ inputs.toTag }}
-          body: ${{ steps.github_release.outputs.changelog }}
+#      - name: Create Github Release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          tag_name: ${{ inputs.toTag }}
+#          body: ${{ steps.github_release.outputs.changelog }}
