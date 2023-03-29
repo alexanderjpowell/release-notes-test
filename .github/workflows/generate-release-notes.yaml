@@ -1,0 +1,43 @@
+name: Generate Release Notes
+on:
+  workflow_dispatch:
+    inputs:
+      fromTag:
+        type: string
+        required: true
+        description: From Tag
+      toTag:
+        type: string
+        required: true
+        description: To Tag
+
+jobs:
+  publish:
+    runs-on: self-hosted
+    env:
+      GRADLE_OPTS: -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx10g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+
+    steps:
+      - uses: bhargavms/action-clean-runner-workspace@main
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+          ref: ${{ inputs.toTag }}
+
+      - name: Generate release notes (if necessary)
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3.7.0
+        with:
+          fromTag: ${{ inputs.fromTag }}
+          toTag: ${{ inputs.toTag }}
+
+      - name: Print Changelog
+        run: |
+          echo "Changelog:"
+          echo "${{ steps.github_release.outputs.changelog }}"
+
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.tag }}
+          body: ${{ steps.github_release.outputs.changelog }}
