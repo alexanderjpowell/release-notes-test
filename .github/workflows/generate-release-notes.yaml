@@ -42,8 +42,8 @@ jobs:
           echo "Changelog:"
           echo "${{ steps.github_release.outputs.changelog }}"
 
-#      - name: Create Github Release
-#        uses: softprops/action-gh-release@v1
-#        with:
-#          tag_name: ${{ inputs.toTag }}
-#          body: ${{ steps.github_release.outputs.changelog }}
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.toTag }}
+          body: ${{ steps.github_release.outputs.changelog }}
